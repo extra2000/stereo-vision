@@ -51,8 +51,8 @@ class StereoVision:
             Disparity map with the same dimension as input image.
         """
 
-        img_left = cv2.pyrDown(cv2.imread(leftimage, 0))
-        img_right = cv2.pyrDown(cv2.imread(rightimage, 0))
+        img_left = cv2.pyrDown(cv2.imread(leftimage, cv2.IMREAD_GRAYSCALE))
+        img_right = cv2.pyrDown(cv2.imread(rightimage, cv2.IMREAD_GRAYSCALE))
 
         # Setting parameters for StereoSGBM algorithm
         min_disparity = kwargs.get('min_disparity', -16)
