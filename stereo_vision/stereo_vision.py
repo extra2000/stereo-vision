@@ -32,6 +32,8 @@ class StereoVision:
             Minimum disparity. Default is -16.
         max_disparity : int
             Number of disparities. Default is 16.
+        win_size : int
+            Window size. Default is 2.
         block_size : int
             Block size. Default is 1.
         disp12_max_diff : int
@@ -57,6 +59,7 @@ class StereoVision:
         # Setting parameters for StereoSGBM algorithm
         min_disparity = kwargs.get('min_disparity', -16)
         max_disparity = kwargs.get('max_disparity', 16)
+        win_size = kwargs.get('win_size', 2)
         block_size = kwargs.get('block_size', 1)
         disp12_max_diff = kwargs.get('disp12_max_diff', -1)
         uniqueness_ratio = kwargs.get('uniqueness_ratio', 15)
@@ -85,6 +88,8 @@ class StereoVision:
             uniquenessRatio=uniqueness_ratio,
             speckleWindowSize=speckle_window_size,
             speckleRange=speckle_range,
+            P1=8*3*win_size**2,
+            P2=32*3*win_size**2,
             mode=sgbm_mode
         )
 
