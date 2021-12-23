@@ -29,9 +29,9 @@ class StereoVision:
         rightimage : str
             Right image filename.
         min_disparity : int
-            Minimum disparity. Default is 0.
-        num_disparities : int
-            Number of disparities. Default is 300.
+            Minimum disparity. Default is -16.
+        max_disparity : int
+            Number of disparities. Default is 16.
         block_size : int
             Block size. Default is 1.
         disp12_max_diff : int
@@ -55,8 +55,8 @@ class StereoVision:
         img_right = cv2.pyrDown(cv2.imread(rightimage, 0))
 
         # Setting parameters for StereoSGBM algorithm
-        min_disparity = kwargs.get('min_disparity', 0)
-        num_disparities = kwargs.get('num_disparities', 300)
+        min_disparity = kwargs.get('min_disparity', -16)
+        max_disparity = kwargs.get('max_disparity', 16)
         block_size = kwargs.get('block_size', 1)
         disp12_max_diff = kwargs.get('disp12_max_diff', -1)
         uniqueness_ratio = kwargs.get('uniqueness_ratio', 15)
@@ -73,6 +73,8 @@ class StereoVision:
             sgbm_mode = cv2.STEREO_SGBM_MODE_SGBM
         else:
             raise ValueError(param_sgbm_mode)
+
+        num_disparities = max_disparity - min_disparity
 
         # Creating an object of StereoSGBM algorithm
         stereo = cv2.StereoSGBM_create(

@@ -47,7 +47,7 @@ def _get_disparity_map(stereovision, args):
         args.leftimage,
         args.rightimage,
         min_disparity=vars(args)['min_disparity'],
-        num_disparities=vars(args)['num_disparities'],
+        max_disparity=vars(args)['max_disparity'],
         block_size=vars(args)['block_size'],
         disp12_max_diff=vars(args)['disp12_max_diff'],
         uniqueness_ratio=vars(args)['uniqueness_ratio'],
@@ -79,8 +79,8 @@ def _parse_args():
     subparser = parser.add_subparsers(help='CLI command', dest='command')
 
     get_disp_img = subparser.add_parser('generate-disparity-image', help='Combine stereo image into a single image which represents disparity map')
-    get_disp_img.add_argument('--min-disparity', type=int, help='Minimum disparity. Default is %(default)d', default=0)
-    get_disp_img.add_argument('--num-disparities', type=int, help='Number of disparities. Default is %(default)d', default=300)
+    get_disp_img.add_argument('--min-disparity', type=int, help='Minimum disparity. Default is %(default)d', default=-16)
+    get_disp_img.add_argument('--max-disparity', type=int, help='Maximum disparity. Default is %(default)d', default=16)
     get_disp_img.add_argument('--block-size', type=int, help='Block size. Default is %(default)d', default=1)
     get_disp_img.add_argument('--disp12-max-diff', type=int, help='Maximum allowed difference. Default is %(default)d', default=-1)
     get_disp_img.add_argument('--uniqueness-ratio', type=int, help='Uniqueness ratio. Default is %(default)d', default=15)
