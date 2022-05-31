@@ -100,6 +100,44 @@ class StereoVision:
 
 
     @staticmethod
+    def get_point_cloud(leftimage, disparity_map, **kwargs):
+        """
+        Generate point cloud based on disparity map
+
+        Parameters
+        ----------
+        leftimage : str
+            Left image filename.
+        disparity_map : cv2.image
+            Disparity map
+
+        Returns
+        -------
+        np.array
+            Point cloud data.
+        np.array
+            Colors for the point cloud.
+        """
+
+        colors = cv2.imread(leftimage, cv2.COLOR_BGR2RGB)
+
+        h, w = disparity_map.shape[:2]
+        f = (50 * 1000) / 16.7
+        Q = np.float32([
+            [1,  0, 0, -0.5*w],
+            [0, -1, 0,  0.5*h],
+            [0,  0, 0, -f],
+            [0,  0, 1,  0]
+        ])
+        points = cv2.reprojectImageTo3D(disparity_map, Q)
+        mask = disparity_map > disparity_map.min()
+        out_points = points[mask]
+        out_colors = colors[mask]
+
+        return out_points, out_colors
+
+
+    @staticmethod
     def write_disparity_map(filename, outimage):
         """Write disparity map to image file
 
@@ -113,3 +151,36 @@ class StereoVision:
 
         normimg = np.abs(cv2.normalize(outimage, 0, 255, cv2.NORM_MINMAX)*255).astype(np.uint8)
         cv2.imwrite(filename, normimg)
+
+
+    @staticmethod
+    def write_point_cloud(plyfile, points, colors):
+        """Write point clouds to PLY file
+
+        Parameters
+        ----------
+        plyfile : str
+            PLY filename
+        points : np.array
+            Points.
+        colors : np.array
+            Colors for the points.
+        """
+
+        verts = points.reshape(-1, 3)
+        colors = colors.reshape(-1, 3)
+        verts = np.hstack([verts, colors])
+        with open(plyfile, 'wb') as f:
+            # write PLY header
+            f.write(('ply\n').encode('utf-8'))
+            f.write(('format ascii 1.0\n').encode('utf-8'))
+            f.write(('element vertex {}\n'.format(len(verts))).encode('utf-8'))
+            f.write(('property float x\n').encode('utf-8'))
+            f.write(('property float y\n').encode('utf-8'))
+            f.write(('property float z\n').encode('utf-8'))
+            f.write(('property uchar red\n').encode('utf-8'))
+            f.write(('property uchar green\n').encode('utf-8'))
+            f.write(('property uchar blue\n').encode('utf-8'))
+            f.write(('end_header\n').encode('utf-8'))
+            # write point clouds including colors
+            np.savetxt(f, verts, fmt='%f %f %f %d %d %d ')

@@ -45,3 +45,26 @@ Example usage:
 ```
 stereovision generate-disparity-image left-image.jpg right-image.jpg out.jpg
 ```
+
+
+## How to Calculate Camera Matrix Focal Length?
+
+Let,
+  g = camera matrix focal length in unit pixel
+  f = optical focal length in unit mm
+
+Assume a Pixel 4A phone camera which has 1.40 micro meter pixel pitch and 4.38 mm focal length. The value of g would be:
+
+g = (4.38 * 1000) / 1.40
+  = ~3128.6 pixels
+
+Note: 1mm = 1000 micro meter. The optical focal length f needed to be converted to micro meter.
+
+
+## How to find out pixel pitch for Blender
+
+scale = scene.render.resolution_percentage / 100
+pixels_in_u_per_mm = resolution_x_in_px * scale / sensor_width_in_mm
+pixels_in_v_per_mm = resolution_y_in_px * scale * aspect_ratio / sensor_height_in_mm
+pixel_size_in_u_direction = 1/pixels_in_u_per_mm
+pixel_size_in_v_direction = 1/pixels_in_v_per_mm
